@@ -28,13 +28,13 @@ public class SpringSecurityJwtApplication implements CommandLineRunner {
         admin.setUsername("admin");
         admin.setPassword(passwordEncoder.encode("password"));
         admin.setRoles("ROLE_ADMIN");
-       // userRepository.save(admin);
+       userRepository.save(admin);
 
         User user = new User();
         user.setUsername("user");
         user.setPassword(passwordEncoder.encode("password"));
         user.setRoles("ROLE_USER");
-       // userRepository.save(user);
+        userRepository.save(user);
     }
 
 }
