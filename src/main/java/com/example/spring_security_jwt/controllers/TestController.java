@@ -3,6 +3,8 @@ package com.example.spring_security_jwt.controllers;
 import com.example.spring_security_jwt.config.jwt.JwtAuthenticationResponse;
 import com.example.spring_security_jwt.config.jwt.JwtUtil;
 import com.example.spring_security_jwt.dtos.LoginRequest;
+import com.example.spring_security_jwt.dtos.SignupRequest;
+import com.example.spring_security_jwt.servivices.TestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TestController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    private final UserDetailsService userDetailsService;
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final TestService testService;
 
     @GetMapping("/home")
     public String home() {
@@ -42,24 +40,14 @@ public class TestController {
         return "This is manage page";
     }
 
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest) {
+        return testService.signup(signupRequest);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        // Validate the user's credentials
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsername(),
-                        loginRequest.getPassword()
-                )
-        );
-        if (authentication.isAuthenticated()) {
-            // Generate JWT token
-            UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
-            String token = jwtUtil.generate(userDetails);
-            // Return the token in a response entity
-            return ResponseEntity.ok(new JwtAuthenticationResponse(token));
-        } else {
-            return ResponseEntity.badRequest().body(new UsernameNotFoundException("Invalid username/password"));
-        }
+       return testService.login(loginRequest);
     }
 
 }
