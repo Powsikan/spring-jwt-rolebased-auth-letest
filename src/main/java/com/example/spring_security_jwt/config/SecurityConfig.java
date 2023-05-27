@@ -1,7 +1,6 @@
 package com.example.spring_security_jwt.config;
 
 import com.example.spring_security_jwt.config.jwt.AuthenticationFilter;
-import com.example.spring_security_jwt.config.jwt.JwtUtil;
 import com.example.spring_security_jwt.exception.AuthFailureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -35,6 +34,7 @@ public class SecurityConfig  {
         return http.csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/login","/signup").permitAll()
+                .requestMatchers(AUTH_WHITELIST).permitAll()
                 .requestMatchers("/home").permitAll()
                 .requestMatchers("/dashboard").hasAnyRole("ADMIN", "USER")
                 .requestMatchers("/manage").hasRole("ADMIN")
@@ -48,6 +48,13 @@ public class SecurityConfig  {
                 .build();
     }
 
+    private final static String[] AUTH_WHITELIST = {
+            "/api/v1/auth/**",
+            "/v3/api-docs/**",
+            "/v3/api-docs.yml",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+    };
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
